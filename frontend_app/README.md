@@ -1,5 +1,44 @@
 # Lightweight React Template for KAVIA
 
+## Supabase 404 Error Diagnostics
+
+### Problem
+If you see a 404 error in your browser console for `https://<project>.supabase.co/rest/v1/notes`, this is usually because:
+- The "notes" table does **not exist** in your Supabase database, or its spelling/casing does not match.
+- The table was deleted or never created.
+- (Rare) The Supabase credentials are pointed to the wrong project.
+
+### How to Fix
+
+1. **Check that the notes table exists:**
+   - Go to your [Supabase Dashboard](https://app.supabase.com/project/jbiwztlpxvwthdmpnrqv).
+   - In the "Table Editor", verify that there is a table called `notes`.
+   - If not, create the table with this SQL:
+     ```sql
+     create table notes (
+       id uuid primary key default uuid_generate_v4(),
+       title text,
+       content text,
+       updated_at timestamp with time zone default now()
+     );
+     ```
+
+2. **Check spelling/case:**  
+   Supabase is case-sensitive for table names in URLs. The table must be named exactly `notes`.
+
+3. **Set Row Level Security (optional for basic testing):**
+   - For easy prototyping, you can disable RLS or add a policy to allow all (for demonstration only):
+
+     ```
+     alter table notes enable row level security;
+     create policy "Allow all" on notes for all using (true);
+     ```
+
+4. **Re-run your application.**  
+   The 404 error should disappear once the table exists.
+
+---
+
 This project provides a minimal React template with a clean, modern UI and minimal dependencies.
 
 ## Features
